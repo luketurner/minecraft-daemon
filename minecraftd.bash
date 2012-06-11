@@ -5,11 +5,12 @@
 
 DAEMON=minecraftd
 USER=luke
-SERVER_LOCATION=~/.minecraft/minecraft_server.jar
+SERVER_LOCATION=/home/luke/.minecraft/minecraft_server.jar
 SERVER_NAME=`echo $SERVER_LOCATION | sed 's/.*\///'`
-MEMORY_START=1G
-MEMORY_MAX=1G
-BACKUP_DIR=~/.minecraft/backups
+SERVER_DIR=`echo $SERVER_LOCATION | sed "s/\/$SERVER_NAME//"`
+MEMORY_START=32M
+MEMORY_MAX=64M
+BACKUP_DIR=~/home/luke/.minecraft/backups
 MAX_BACKUPS=5
 WORLD_NAME=world
 WORLD_DIR=$SERVER_LOCATION/$WORLD_NAME
@@ -26,6 +27,7 @@ WORLD_DIR=$SERVER_LOCATION/$WORLD_NAME
 
 function run_as_user {
     su -c "$1" $USER
+    echo $1
     return $?
 }
 
@@ -40,8 +42,8 @@ function server_running() {
 }
 
 function start_server() {
-    run_command="java -Xms$MEMORY_START -Xmx$MEMORY_MAX -jar $SERVER_LOCATION nogui"
-    run_as_user "tmux new-session -d -s $DAEMON $run_command"
+    run_command="cd $SERVER_DIR && java -Xms$MEMORY_START -Xmx$MEMORY_MAX -jar $SERVER_LOCATION nogui"
+    run_as_user "tmux new-session -d -s $DAEMON \"$run_command\""
     return $?
 }
 
@@ -60,21 +62,16 @@ function stop_server() {
     return $?
 }
 
-#allows for tilde prefix use in directories
-
-SERVER_LOCATION=`echo $SERVER_LOCATION | sed "s/~/~$USER/"`
-BACKUP_DIR=`echo $BACKUP_DIR | sed "s/~/~$USER/"`
-WORLD_DIR=`echo $WORLD_DIR | sed "s/~/~$USER/"`
-
-
 case $1 in
     start)
+        echo $SERVER_LOCATION
         stat_busy "Starting $DAEMON"
         if server_running; then
             stat_fail
             exit 1
         else
-            if start_server; then
+            start_server
+            if [[ "$?" ]]; then
                 stat_done
             else
                 stat_fail
