@@ -8,6 +8,17 @@ Intended for use with Arch Linux.
 AFAIK there are no AUR packages for it. There are LOTS of minecraft-related AUR
 packages though, so you should be O.K.
 
+1. ``mv minecraftd /etc/rc.d/minecraftd``
+2. ``mv minecraftd.conf /etc/conf.d/minecraftd``
+3. ``cd {YOUR SERVER DIR} && wget
+   https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar``
+4. ``mkdir {YOUR BACKUP DIR}``
+5. ``adduser minecraftd``
+6. ``chown -R minecraftd {YOUR SERVER DIR}``
+7. ``chown -R minecraftd {YOUR BACKUP DIR}``
+
+I think that covers it. Look in the config file for sample directory locations.
+
 
 Things It Will Do
 =================
