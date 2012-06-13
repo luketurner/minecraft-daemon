@@ -35,3 +35,8 @@ Things It Won't Do
 ==================
 
 * Have any guarantees whatsoever. Honestly. 
+
+TODO
+====
+
+* Add configuration for saving server logs
