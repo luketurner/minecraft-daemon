@@ -3,27 +3,23 @@
 . /etc/rc.conf
 . /etc/rc.d/functions
 
-DAEMON=minecraftd
+# Set defaults
 USER=luke
 SERVER_LOCATION=/home/luke/.minecraft/minecraft_server.jar
-SERVER_NAME=`echo $SERVER_LOCATION | sed 's/.*\///'`
-SERVER_DIR=`echo $SERVER_LOCATION | sed "s/\/$SERVER_NAME//"`
 MEMORY_START=32M
 MEMORY_MAX=64M
 BACKUP_DIR=/home/luke/.minecraft/backups
 MAX_BACKUPS=5
 WORLD_NAME=world
-WORLD_DIR=$SERVER_DIR/$WORLD_NAME
 
-# Source configuration directory
-# Note configuration file is REQUIRED
-# because it includes path to Minecraft server file
-#if [[ -e /etc/conf.d/$DAEMON ]]; then
-#    . /etc/conf.d/$DAEMON
-#else
-#    echo "Configuration file /etc/conf.d/$DAEMON does not exist. This file is required. You may have to re-install the package to get it back."
-#    exit 1
-#fi
+ Source configuration directory
+if [[ -e /etc/conf.d/$DAEMON ]]; then
+    . /etc/conf.d/$DAEMON
+
+DAEMON=minecraftd
+SERVER_NAME=`echo $SERVER_LOCATION | sed 's/.*\///'`
+SERVER_DIR=`echo $SERVER_LOCATION | sed "s/\/$SERVER_NAME//"`
+WORLD_DIR=$SERVER_DIR/$WORLD_NAME
 
 function run_as_user {
     result=`su -c "$1" $USER`
