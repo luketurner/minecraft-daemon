@@ -72,6 +72,7 @@ case $1 in
         else
             start_server
             if [[ "$?" ]]; then
+                add_daemon $DAEMON
                 stat_done
             else
                 stat_fail
@@ -82,6 +83,7 @@ case $1 in
     stop)
         stat_busy "Stopping $DAEMON"
         if stop_server; then
+            rm_daemon $DAEMON
             stat_done
         else
             stat_fail
@@ -91,12 +93,14 @@ case $1 in
     restart)
         stat_busy "Stopping $DAEMON"
         if stop_server; then
+            rm_daemon $DAEMON
             stat_done
         else
             stat_fail
             exit 1
         fi
         if start_server; then
+            add_daemon $DAEMON
             stat_done
         else
             stat_fail
